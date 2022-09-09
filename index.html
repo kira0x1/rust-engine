@@ -1,0 +1,43 @@
+<html>
+  <body
+    style="
+      margin: 0;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      background-color: #333;
+    "
+  >
+    <canvas id="my_canvas" style="width: 100vw; height: 100vw"></canvas>
+    <script>
+      let canvas = document.getElementById("my_canvas");
+      let gl = canvas.getContext("webgl");
+
+      let imports = {
+        env: {
+          js_clear_screen_to_color: function (red, green, blue, alpha) {
+            gl.clearColor(red, green, blue, alpha);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+          },
+
+          log_number: function (number) {
+            console.log(`Number from rust: ${number}`);
+          },
+        },
+      };
+
+      gl.canvas.width = canvas.clientWidth;
+      gl.canvas.height = canvas.clientHeight;
+      gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+      gl.clearColor(1.0, 0.0, 0.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      WebAssembly.instantiateStreaming(
+        fetch("target/wasm32-unknown-unknown/debug/examples/game.wasm"),
+        imports
+      ).then(function (result) {
+        result.instance.exports.main();
+      });
+    </script>
+  </body>
+</html>

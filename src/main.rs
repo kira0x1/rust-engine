@@ -1,7 +1,7 @@
-mod GameObject;
+mod game_object;
 
 use raylib::prelude::*;
-use GameObject::create_template_object;
+use game_object::create_template_object;
 
 fn main() {
     let mut go = create_template_object();
